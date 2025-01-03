@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-// [M3.L2] · Actividad Nº 3 "Saltar y correr"
+// [M3.L2] · Actividad Nº 4 "Animando el movimiento!"
 
 public class PlayerController : MonoBehaviour
 {
@@ -16,10 +16,13 @@ public class PlayerController : MonoBehaviour
     private Rigidbody rb;
     private Vector3 direction;
 
+    [SerializeField] Animator anim;
+
     // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+        anim = GetComponent<Animator>();
         currentSpeed = movementSpeed;
     }
 
@@ -33,11 +36,18 @@ public class PlayerController : MonoBehaviour
         direction = new Vector3(moveHorizontal, 0.0f, moveVertical);
         direction = transform.TransformDirection(direction);
 
+        if (direction.x != 0 || direction.z != 0 )
+            {anim.SetBool("Run", true);}
+        
+        else
+            { {anim.SetBool("Run", false);} }
+
         // Salto del PJ
         if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
         {
             rb.AddForce(new Vector3(0, jumpForce, 0), ForceMode.Impulse);
             isGrounded = false;
+            anim.SetBool("Jump", true);
         }
     }
 
@@ -47,5 +57,6 @@ public class PlayerController : MonoBehaviour
     private void OnCollisionEnter(Collision collision)
     {
         isGrounded = true;
+        anim.SetBool("Jump", false);
     }
 }
